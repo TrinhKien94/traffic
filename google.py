@@ -15,20 +15,43 @@ from selenium.webdriver.support import expected_conditions as EC
 import random
 import time
 import concurrent.futures
-driver = webdriver.Chrome()
+driver = webdriver.Chrome("./chromedriver")
+from bs4 import BeautifulSoup
+# driver.get("https://www.google.com/")
+# driver.find_element_by_name("q").click()
+# driver.find_element_by_name("q").send_keys(Keys.DOWN)
+# driver.find_element_by_name("q").clear()
+# driver.find_element_by_name("q").send_keys("vietnam-trader")
+# driver.find_element_by_name("q").send_keys(Keys.ENTER)
+# driver.find_element_by_link_text("2").click()
+# driver.find_element_by_link_text("3").click()
+# driver.find_element_by_link_text("4").click()
+# driver.find_element_by_link_text("5").click()
+# driver.find_element_by_link_text("6").click()
+# driver.find_element_by_link_text("3").click()
+# driver.find_element_by_xpath("(.//*[normalize-space(text()) and normalize-space(.)='Vietnamese trader'])[1]/following::div[5]").click()
+
+def checkStringInList(l):
+    for s in l:
+        if 'vietnam-trader.com' in s.text:
+            return True
+    return False
+delay = 10
 driver.get("https://www.google.com/")
 driver.find_element_by_name("q").click()
-driver.find_element_by_name("q").send_keys(Keys.DOWN)
 driver.find_element_by_name("q").clear()
-driver.find_element_by_name("q").send_keys("vietnam-trader")
+driver.find_element_by_name("q").send_keys(u"ieo là gì")
 driver.find_element_by_name("q").send_keys(Keys.ENTER)
-driver.find_element_by_link_text("2").click()
-driver.find_element_by_link_text("3").click()
-driver.find_element_by_link_text("4").click()
-driver.find_element_by_link_text("5").click()
-driver.find_element_by_link_text("6").click()
-driver.find_element_by_link_text("3").click()
-driver.find_element_by_xpath("(.//*[normalize-space(text()) and normalize-space(.)='Vietnamese trader'])[1]/following::div[5]").click()
+ps = driver.page_source
+soup = BeautifulSoup(ps, 'html.parser')
+play = soup.select('div cite')
+while not checkStringInList(play):
+    myElem = WebDriverWait(driver, delay).until(EC.presence_of_element_located((By.CSS_SELECTOR, '#navcnt td:last-child a')))
+    driver.find_element_by_css_selector("#navcnt td:last-child a").click()
+    ps = driver.page_source
+    soup = BeautifulSoup(ps, 'html.parser')
+    play = soup.select('div cite')
+
 
 
 # driverLocation = './chromedriver' 
